@@ -1,5 +1,12 @@
 <script setup lang='ts'>
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { onBeforeUnmount, ref, watch } from 'vue'
+import { vMaska } from 'maska/vue'
+
+type MaskaDetail = {
+  masked: string
+  unmasked: string
+  completed: boolean
+}
 
 const props = defineProps<{
   avatarSrc: string
@@ -12,27 +19,38 @@ const emits = defineEmits<{
   (e: 'change', value: number | null): void
 }>()
 
-const rawDigits = ref('')
+const inputValue = ref('')
 const isFocused = ref(false)
 
-const displayValue = computed(() => {
-  return rawDigits.value.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
-})
+const maskOptions = {
+  mask: '9 99#',
+  reversed: true,
+  tokens: {
+    9: {
+      pattern: /[0-9]/,
+      repeated: true,
+    },
+  },
+}
+
+function formatDigits(value: string) {
+  return value.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+}
 
 watch(
   () => props.hours,
   (nextValue) => {
     const normalizedValue = nextValue === null ? '' : String(nextValue)
+    const maskedValue = formatDigits(normalizedValue)
 
-    if (normalizedValue !== rawDigits.value) {
-      rawDigits.value = normalizedValue
+    if (maskedValue !== inputValue.value) {
+      inputValue.value = maskedValue
     }
   },
   { immediate: true },
 )
 
 
-// debounced change emitter 
 let timer: ReturnType<typeof setTimeout> | undefined
 
 function emitChange(value: number | null) {
@@ -52,33 +70,9 @@ function emitChange(value: number | null) {
   }, debounceMs)
 }
 
-function handleInput(event: Event) {
-  const nextDigits = (event.target as HTMLInputElement).value.replace(/\D/g, '')
-
-  rawDigits.value = nextDigits
-  emitChange(nextDigits === '' ? null : Number(nextDigits))
-}
-
-function handleKeydown(event: KeyboardEvent) {
-  const allowedKeys = [
-    'Backspace',
-    'Delete',
-    'ArrowLeft',
-    'ArrowRight',
-    'ArrowUp',
-    'ArrowDown',
-    'Tab',
-    'Home',
-    'End',
-  ]
-
-  if (allowedKeys.includes(event.key) || event.ctrlKey || event.metaKey) {
-    return
-  }
-
-  if (!/^\d$/.test(event.key)) {
-    event.preventDefault()
-  }
+function handleMaska(event: CustomEvent<MaskaDetail>) {
+  inputValue.value = event.detail.masked
+  emitChange(event.detail.unmasked === '' ? null : Number(event.detail.unmasked))
 }
 
 onBeforeUnmount(() => {
@@ -102,14 +96,14 @@ onBeforeUnmount(() => {
         type='text'
         inputmode='numeric'
         autocomplete='off'
-        :value='displayValue'
+        v-maska='maskOptions'
+        v-model='inputValue'
         class='rounded border px-2 py-1 text-lg outline-none transition-colors'
         :class='[
           isFocused ? "border-violet-500" : "border-gray-300",
         ]'
         placeholder='0'
-        @input='handleInput'
-        @keydown='handleKeydown'
+        @maska='handleMaska($event as CustomEvent<MaskaDetail>)'
         @focus='isFocused = true'
         @blur='isFocused = false'
       >
