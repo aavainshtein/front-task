@@ -1,10 +1,11 @@
 <script setup lang='ts'>
-import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
 
 const props = defineProps<{
   avatarSrc: string
-  value: number | null
+  hours: number | null
   debounce?: number
+  inputWidthClass?: string
 }>()
 
 const emits = defineEmits<{
@@ -13,15 +14,13 @@ const emits = defineEmits<{
 
 const rawDigits = ref('')
 const isFocused = ref(false)
-const mirror = ref<HTMLSpanElement | null>(null)
-const inputWidth = ref(72)
 
 const displayValue = computed(() => {
   return rawDigits.value.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
 })
 
 watch(
-  () => props.value,
+  () => props.hours,
   (nextValue) => {
     const normalizedValue = nextValue === null ? '' : String(nextValue)
 
@@ -32,18 +31,8 @@ watch(
   { immediate: true },
 )
 
-watch(
-  displayValue,
-  () => {
-    nextTick(() => {
-      if (!mirror.value) return
 
-      inputWidth.value = Math.max(72, mirror.value.offsetWidth + 20)
-    })
-  },
-  { immediate: true },
-)
-
+// debounced change emitter 
 let timer: ReturnType<typeof setTimeout> | undefined
 
 function emitChange(value: number | null) {
@@ -108,21 +97,16 @@ onBeforeUnmount(() => {
       :class='isFocused ? "border-violet-500" : "border-gray-300"'
     >
 
-    <div class='relative inline-block'>
-      <span
-        ref='mirror'
-        aria-hidden='true'
-        class='invisible absolute whitespace-pre rounded px-2 py-1 text-lg'
-      >{{ displayValue || '0' }}</span>
-
+    <div>
       <input
         type='text'
         inputmode='numeric'
         autocomplete='off'
         :value='displayValue'
-        :style='{ width: `${inputWidth}px` }'
         class='rounded border px-2 py-1 text-lg outline-none transition-colors'
-        :class='isFocused ? "border-violet-500" : "border-gray-300"'
+        :class='[
+          isFocused ? "border-violet-500" : "border-gray-300",
+        ]'
         placeholder='0'
         @input='handleInput'
         @keydown='handleKeydown'

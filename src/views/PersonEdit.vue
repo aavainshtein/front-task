@@ -47,8 +47,9 @@ function updateAge(value: string) {
     </div>
     <AVPerson
       :avatar-src="'/img.png'"
-      :value="Math.floor(person.ageInHours / 8760)"
-      @change="updateAge($event ? (Number($event) * 8760).toString() : '0')"
+      :hours="person.ageInHours"
+      @change="updateAge($event ? Number($event).toString() : '0')"
+      :debounce="200"
       
     />
   </div>
