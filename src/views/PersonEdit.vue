@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { store } from '@/store'
+import AVPerson from '@/components/AVPerson.vue'
 
 const route = useRoute()
 
@@ -44,6 +45,12 @@ function updateAge(value: string) {
         </div>
       </div>
     </div>
+    <AVPerson
+      :avatar-src="'/img.png'"
+      :value="Math.floor(person.ageInHours / 8760)"
+      @change="updateAge($event ? (Number($event) * 8760).toString() : '0')"
+      
+    />
   </div>
 
   <div v-else>
