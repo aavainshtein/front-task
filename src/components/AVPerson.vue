@@ -61,6 +61,10 @@ const inputStateClass = computed(() => {
   return 'border border-[#CFCADF]'
 })
 
+const inputTextClass = computed(() => {
+  return visualState.value === 'active' ? 'text-[#1E0E4C]' : 'text-[rgb(30_14_76_/_0.3)]'
+})
+
 const labelClass = computed(() => {
   return visualState.value === 'active' ? 'text-[#3D06D7]' : 'text-[#1E0E4C]'
 })
@@ -183,6 +187,7 @@ onBeforeUnmount(() => {
               inputClass,
               inputPaddingClass,
               inputStateClass,
+              inputTextClass,
             ]'
             placeholder='0'
             @maska='handleMaska($event as CustomEvent<MaskaDetail>)'
