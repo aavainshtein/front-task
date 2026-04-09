@@ -13,6 +13,7 @@ const props = defineProps<{
   modelValue: number | null
   label?: string
   caption?: string
+  altText?: string
 }>()
 
 const emits = defineEmits<{
@@ -20,6 +21,7 @@ const emits = defineEmits<{
 }>()
 
 const inputId = useId()
+const captionId = useId()
 
 const inputValue = ref('')
 const isFocused = ref(false)
@@ -128,7 +130,7 @@ function handleMaska(event: CustomEvent<MaskaDetail>) {
 
       <img
         :src='avatarSrc'
-        alt=''
+        :alt='props.altText ?? ""'
         class='h-20 w-20 rounded-full object-cover'
       >
     </div>
@@ -158,6 +160,7 @@ function handleMaska(event: CustomEvent<MaskaDetail>) {
 
           <input
             :id='inputId'
+            :aria-describedby='captionId'
             type='text'
             size='1'
             inputmode='numeric'
@@ -178,6 +181,7 @@ function handleMaska(event: CustomEvent<MaskaDetail>) {
         </div>
 
         <span
+          :id='captionId'
           class='shrink-0 whitespace-nowrap font-normal text-[18px] leading-[22px] [font-family:Inter,sans-serif]'
           :class='captionClass'
         >

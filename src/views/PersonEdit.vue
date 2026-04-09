@@ -23,6 +23,7 @@ function updateAge(value: number | null) {
     <router-link to="/" class="text-violet-600 hover:underline text-sm">&larr; Back</router-link>
     <AVPerson
       :avatar-src="'/cat.jpg'"
+      :alt-text="person.name"
       :model-value="person.ageInHours"
       :label="`${person.name.toUpperCase()} IS`"
       caption="hours old"
