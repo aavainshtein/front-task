@@ -27,7 +27,7 @@ const isHovered = ref(false)
 
 const sharedInputLayerClass = "col-start-1 row-start-1 box-border h-11 min-w-[72px] rounded-[6px] py-2 pr-4 pl-2 text-[18px] font-medium leading-[22px] tracking-[0] text-[#1E0E4C] [font-family:Inter,sans-serif]"
 const mirrorClass = `${sharedInputLayerClass} invisible pointer-events-none whitespace-pre border-transparent`
-const inputClass = `${sharedInputLayerClass} outline-none transition-[border-color,border-width] placeholder:font-medium placeholder:leading-[22px] placeholder:tracking-[0] placeholder:text-[rgb(30_14_76_/_0.3)] caret-[#3D06D7]`
+const inputClass = `${sharedInputLayerClass} outline-none transition-[border-color,border-width] placeholder:font-medium placeholder:leading-[22px] placeholder:tracking-[0] caret-[#3D06D7]`
 
 const componentState = computed<'default' | 'active'>(() => {
   return isFocused.value ? 'active' : 'default'
@@ -65,19 +65,23 @@ const inputTextClass = computed(() => {
   return visualState.value === 'active' ? 'text-[#1E0E4C]' : 'text-[rgb(30_14_76_/_0.3)]'
 })
 
+const inputPlaceholderClass = computed(() => {
+  return visualState.value === 'active'
+    ? 'placeholder:text-[#1E0E4C]'
+    : 'placeholder:text-[rgb(30_14_76_/_0.3)]'
+})
+
 const labelClass = computed(() => {
   return visualState.value === 'active' ? 'text-[#3D06D7]' : 'text-[#1E0E4C]'
+})
+
+const captionClass = computed(() => {
+  return 'text-[#1E0E4C]'
 })
 
 const captionText = computed(() => props.caption ?? 'hours old')
 
 const mirrorValue = computed(() => inputValue.value || '0')
-
-const showPlaceholder = computed(() => inputValue.value.length === 0)
-
-const inputPaddingClass = computed(() => {
-  return showPlaceholder.value ? 'pr-4' : 'pr-4'
-})
 
 const maskOptions = {
   mask: '9 99#',
@@ -185,9 +189,9 @@ onBeforeUnmount(() => {
             v-model='inputValue'
             :class='[
               inputClass,
-              inputPaddingClass,
               inputStateClass,
               inputTextClass,
+              inputPlaceholderClass,
             ]'
             placeholder='0'
             @maska='handleMaska($event as CustomEvent<MaskaDetail>)'
@@ -196,7 +200,10 @@ onBeforeUnmount(() => {
           >
         </div>
 
-        <span class='shrink-0 whitespace-nowrap font-normal text-[18px] leading-[22px] text-[#1E0E4C] [font-family:Inter,sans-serif]'>
+        <span
+          class='shrink-0 whitespace-nowrap font-normal text-[18px] leading-[22px] [font-family:Inter,sans-serif]'
+          :class='captionClass'
+        >
           {{ captionText }}
         </span>
       </div>
