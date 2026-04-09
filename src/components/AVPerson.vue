@@ -22,7 +22,7 @@ const emits = defineEmits<{
 const inputValue = ref('')
 const isFocused = ref(false)
 
-const sharedInputLayerClass = 'col-start-1 row-start-1 min-w-[72px] rounded border px-2 py-1 text-lg'
+const sharedInputLayerClass = 'col-start-1 row-start-1 min-w-[16px] rounded border px-2 py-1 text-lg'
 const mirrorClass = `${sharedInputLayerClass} invisible pointer-events-none whitespace-pre border-transparent`
 const inputClass = `${sharedInputLayerClass} outline-none transition-colors`
 
@@ -87,7 +87,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class='flex items-center gap-3'>
+  <div class='flex flex-shrink-0 min-w-[32px] items-center gap-3'>
     <img
       :src='avatarSrc'
       alt=''
@@ -106,6 +106,7 @@ onBeforeUnmount(() => {
 
         <input
           type='text'
+          size='1'
           inputmode='numeric'
           autocomplete='off'
           v-maska='maskOptions'
