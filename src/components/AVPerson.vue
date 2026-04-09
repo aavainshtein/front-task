@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-import { onBeforeUnmount, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { vMaska } from 'maska/vue'
 
 type MaskaDetail = {
@@ -22,9 +22,17 @@ const emits = defineEmits<{
 const inputValue = ref('')
 const isFocused = ref(false)
 
-const sharedInputLayerClass = 'col-start-1 row-start-1 min-w-[16px] rounded border px-2 py-1 text-lg'
+const sharedInputLayerClass = "col-start-1 row-start-1 box-border h-11 min-w-[72px] rounded-[6px] py-2 pr-4 pl-2 text-[18px] font-medium leading-[22px] tracking-[0] text-[#1E0E4C] [font-family:Inter,sans-serif]"
 const mirrorClass = `${sharedInputLayerClass} invisible pointer-events-none whitespace-pre border-transparent`
-const inputClass = `${sharedInputLayerClass} outline-none transition-colors`
+const inputClass = `${sharedInputLayerClass} outline-none transition-[border-color,border-width,opacity] placeholder:text-[#1E0E4C] caret-[#3D06D7]`
+
+const inputStateClass = computed(() => {
+  return isFocused.value ? 'border-[1.5px] border-[#906FEE] opacity-100' : 'border border-[#CFCADF] opacity-30'
+})
+
+const mirrorStateClass = computed(() => {
+  return isFocused.value ? 'border-[1.5px]' : 'border'
+})
 
 const maskOptions = {
   mask: '9 99#',
@@ -99,7 +107,7 @@ onBeforeUnmount(() => {
       <div class='inline-grid align-middle'>
         <span
           aria-hidden='true'
-          :class='mirrorClass'
+          :class='[mirrorClass, mirrorStateClass]'
         >
           {{ inputValue || '0' }}
         </span>
@@ -113,7 +121,7 @@ onBeforeUnmount(() => {
           v-model='inputValue'
           :class='[
             inputClass,
-            isFocused ? "border-violet-500" : "border-gray-300",
+            inputStateClass,
           ]'
           placeholder='0'
           @maska='handleMaska($event as CustomEvent<MaskaDetail>)'
