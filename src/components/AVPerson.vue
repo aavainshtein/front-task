@@ -22,6 +22,10 @@ const emits = defineEmits<{
 const inputValue = ref('')
 const isFocused = ref(false)
 
+const sharedInputLayerClass = 'col-start-1 row-start-1 min-w-[72px] rounded border px-2 py-1 text-lg'
+const mirrorClass = `${sharedInputLayerClass} invisible pointer-events-none whitespace-pre border-transparent`
+const inputClass = `${sharedInputLayerClass} outline-none transition-colors`
+
 const maskOptions = {
   mask: '9 99#',
   reversed: true,
@@ -95,7 +99,7 @@ onBeforeUnmount(() => {
       <div class='inline-grid align-middle'>
         <span
           aria-hidden='true'
-          class='invisible pointer-events-none col-start-1 row-start-1 min-w-[72px] whitespace-pre rounded border border-transparent px-2 py-1 text-lg'
+          :class='mirrorClass'
         >
           {{ inputValue || '0' }}
         </span>
@@ -106,8 +110,8 @@ onBeforeUnmount(() => {
           autocomplete='off'
           v-maska='maskOptions'
           v-model='inputValue'
-          class='col-start-1 row-start-1 min-w-[72px] rounded border px-2 py-1 text-lg outline-none transition-colors'
           :class='[
+            inputClass,
             isFocused ? "border-violet-500" : "border-gray-300",
           ]'
           placeholder='0'
