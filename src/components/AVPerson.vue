@@ -92,21 +92,30 @@ onBeforeUnmount(() => {
     >
 
     <div>
-      <input
-        type='text'
-        inputmode='numeric'
-        autocomplete='off'
-        v-maska='maskOptions'
-        v-model='inputValue'
-        class='rounded border px-2 py-1 text-lg outline-none transition-colors'
-        :class='[
-          isFocused ? "border-violet-500" : "border-gray-300",
-        ]'
-        placeholder='0'
-        @maska='handleMaska($event as CustomEvent<MaskaDetail>)'
-        @focus='isFocused = true'
-        @blur='isFocused = false'
-      >
+      <div class='inline-grid align-middle'>
+        <span
+          aria-hidden='true'
+          class='invisible pointer-events-none col-start-1 row-start-1 min-w-[72px] whitespace-pre rounded border border-transparent px-2 py-1 text-lg'
+        >
+          {{ inputValue || '0' }}
+        </span>
+
+        <input
+          type='text'
+          inputmode='numeric'
+          autocomplete='off'
+          v-maska='maskOptions'
+          v-model='inputValue'
+          class='col-start-1 row-start-1 min-w-[72px] rounded border px-2 py-1 text-lg outline-none transition-colors'
+          :class='[
+            isFocused ? "border-violet-500" : "border-gray-300",
+          ]'
+          placeholder='0'
+          @maska='handleMaska($event as CustomEvent<MaskaDetail>)'
+          @focus='isFocused = true'
+          @blur='isFocused = false'
+        >
+      </div>
     </div>
   </div>
 </template>
