@@ -11,9 +11,9 @@ const person = computed(() => {
   return store.people.find((p) => p.id === id)
 })
 
-function updateAge(value: string) {
+function updateAge(value: number | null) {
   if (person.value) {
-    person.value.ageInHours = Number(value) || 0
+    person.value.ageInHours = value ?? 0
   }
 }
 </script>
@@ -23,11 +23,10 @@ function updateAge(value: string) {
     <router-link to="/" class="text-violet-600 hover:underline text-sm">&larr; Back</router-link>
     <AVPerson
       :avatar-src="'/cat.jpg'"
-      :value="person.ageInHours"
+      :model-value="person.ageInHours"
       :label="`${person.name.toUpperCase()} IS`"
       caption="hours old"
-      @change="updateAge($event ? Number($event).toString() : '0')"
-      :debounce="200"
+      @update:model-value="updateAge"
     />
   </div>
 

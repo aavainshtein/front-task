@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, ref, useId, watch } from 'vue'
 import { vMaska } from 'maska/vue'
 
 type MaskaDetail = {
@@ -10,15 +10,16 @@ type MaskaDetail = {
 
 const props = defineProps<{
   avatarSrc: string
-  value: number | null
+  modelValue: number | null
   label?: string
   caption?: string
-  debounce?: number
 }>()
 
 const emits = defineEmits<{
-  (e: 'change', value: number | null): void
+  (e: 'update:modelValue', value: number | null): void
 }>()
+
+const inputId = useId()
 
 const inputValue = ref('')
 const isFocused = ref(false)
@@ -98,7 +99,7 @@ function formatDigits(value: string) {
 }
 
 watch(
-  () => props.value,
+  () => props.modelValue,
   (nextValue) => {
     const normalizedValue = nextValue === null ? '' : String(nextValue)
     const maskedValue = formatDigits(normalizedValue)
@@ -110,36 +111,11 @@ watch(
   { immediate: true },
 )
 
-
-let timer: ReturnType<typeof setTimeout> | undefined
-
-function emitChange(value: number | null) {
-  const debounceMs = props.debounce ?? 0
-
-  if (timer) {
-    clearTimeout(timer)
-  }
-
-  if (debounceMs <= 0) {
-    emits('change', value)
-    return
-  }
-
-  timer = setTimeout(() => {
-    emits('change', value)
-  }, debounceMs)
-}
-
 function handleMaska(event: CustomEvent<MaskaDetail>) {
   inputValue.value = event.detail.masked
-  emitChange(event.detail.unmasked === '' ? null : Number(event.detail.unmasked))
+  const numValue = event.detail.unmasked === '' ? null : Number(event.detail.unmasked)
+  emits('update:modelValue', numValue)
 }
-
-onBeforeUnmount(() => {
-  if (timer) {
-    clearTimeout(timer)
-  }
-})
 </script>
 
 <template>
@@ -160,6 +136,7 @@ onBeforeUnmount(() => {
     <div class='flex min-w-[162px] flex-col items-start gap-3'>
       <label
         v-if='props.label'
+        :for='inputId'
         class='font-normal text-[16px] leading-[15px] tracking-[0.02em] [font-family:Koulen,cursive]'
         :class='labelClass'
       >
@@ -180,6 +157,7 @@ onBeforeUnmount(() => {
           </span>
 
           <input
+            :id='inputId'
             type='text'
             size='1'
             inputmode='numeric'
