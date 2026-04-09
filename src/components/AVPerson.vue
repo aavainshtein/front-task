@@ -10,11 +10,10 @@ type MaskaDetail = {
 
 const props = defineProps<{
   avatarSrc: string
-  hours: number | null
+  value: number | null
   label?: string
   caption?: string
   debounce?: number
-  inputWidthClass?: string
 }>()
 
 const emits = defineEmits<{
@@ -99,7 +98,7 @@ function formatDigits(value: string) {
 }
 
 watch(
-  () => props.hours,
+  () => props.value,
   (nextValue) => {
     const normalizedValue = nextValue === null ? '' : String(nextValue)
     const maskedValue = formatDigits(normalizedValue)
