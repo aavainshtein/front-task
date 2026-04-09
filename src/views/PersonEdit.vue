@@ -16,7 +16,7 @@ const person = computed(() => {
   <div v-if="person" class="flex flex-col gap-4">
     <router-link to="/" class="text-violet-600 hover:underline text-sm">&larr; Back</router-link>
     <AVPerson
-      :avatar-src="'/cat.jpg'"
+      avatar-src="/cat.jpg"
       :alt-text="person.name"
       v-model="person.ageInHours"
       :label="`${person.name.toUpperCase()} IS`"
