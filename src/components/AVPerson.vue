@@ -8,11 +8,22 @@ type MaskaDetail = {
   completed: boolean
 }
 
+export interface AVPersonUI {
+  root?: string
+  avatar?: string
+  ring?: string
+  label?: string
+  inputWrapper?: string
+  input?: string
+  caption?: string
+}
+
 const props = defineProps<{
   avatarSrc: string
   label?: string
   caption?: string
   altText?: string
+  ui?: AVPersonUI
 }>()
 
 const model = defineModel<number | null>({ required: true })
@@ -117,17 +128,19 @@ function handleMaska(event: CustomEvent<MaskaDetail>) {
 </script>
 
 <template>
-  <div class='flex items-center gap-4'>
+  <div class='flex items-center gap-4' :class='props.ui?.root'>
     <div class='relative h-20 w-20 flex-none'>
       <div
         v-if='componentState === "active"'
         class='pointer-events-none absolute left-1/2 top-1/2 h-[88px] w-[88px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#3D06D7]'
+        :class='props.ui?.ring'
       />
 
       <img
         :src='avatarSrc'
         :alt='props.altText ?? ""'
         class='h-20 w-20 rounded-full object-cover'
+        :class='props.ui?.avatar'
       >
     </div>
 
@@ -136,7 +149,7 @@ function handleMaska(event: CustomEvent<MaskaDetail>) {
         v-if='props.label'
         :for='inputId'
         class='font-normal text-[16px] leading-[15px] tracking-[0.02em] [font-family:Koulen,cursive]'
-        :class='labelClass'
+        :class='[labelClass, props.ui?.label]'
       >
         {{ props.label }}
       </label>
@@ -144,6 +157,7 @@ function handleMaska(event: CustomEvent<MaskaDetail>) {
       <div class='flex h-11 items-center gap-3'>
         <div
           class='inline-grid align-middle'
+          :class='props.ui?.inputWrapper'
           @mouseenter='isHovered = true'
           @mouseleave='isHovered = false'
         >
@@ -168,6 +182,7 @@ function handleMaska(event: CustomEvent<MaskaDetail>) {
               inputStateClass,
               inputTextClass,
               inputPlaceholderClass,
+              props.ui?.input,
             ]'
             placeholder='0'
             @maska='handleMaska($event as CustomEvent<MaskaDetail>)'
@@ -179,7 +194,7 @@ function handleMaska(event: CustomEvent<MaskaDetail>) {
         <span
           :id='captionId'
           class='shrink-0 whitespace-nowrap font-normal text-[18px] leading-[22px] [font-family:Inter,sans-serif]'
-          :class='captionClass'
+          :class='[captionClass, props.ui?.caption]'
         >
           {{ captionText }}
         </span>
