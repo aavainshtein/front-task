@@ -29,6 +29,10 @@ const sharedInputLayerClass = "col-start-1 row-start-1 box-border h-11 min-w-[72
 const mirrorClass = `${sharedInputLayerClass} invisible pointer-events-none whitespace-pre border-transparent`
 const inputClass = `${sharedInputLayerClass} outline-none transition-[border-color,border-width] placeholder:font-medium placeholder:leading-[22px] placeholder:tracking-[0] placeholder:text-[rgb(30_14_76_/_0.3)] caret-[#3D06D7]`
 
+const componentState = computed<'default' | 'active'>(() => {
+  return isFocused.value ? 'active' : 'default'
+})
+
 const visualState = computed<'default' | 'hover' | 'active'>(() => {
   if (isFocused.value) {
     return 'active'
@@ -132,15 +136,21 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class='flex items-start gap-3'>
-    <img
-      :src='avatarSrc'
-      alt=''
-      class='h-14 w-14 rounded-full border-2 object-cover transition-colors'
-      :class='visualState === "active" ? "border-violet-500" : "border-gray-300"'
-    >
+  <div class='flex items-center gap-4'>
+    <div class='relative h-20 w-20 flex-none'>
+      <div
+        v-if='componentState === "active"'
+        class='pointer-events-none absolute left-1/2 top-1/2 h-[88px] w-[88px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#3D06D7]'
+      />
 
-    <div class='flex flex-col items-start gap-3'>
+      <img
+        :src='avatarSrc'
+        alt=''
+        class='h-20 w-20 rounded-full object-cover'
+      >
+    </div>
+
+    <div class='flex min-w-[162px] flex-col items-start gap-3'>
       <label
         v-if='props.label'
         class='font-normal text-[16px] leading-[15px] tracking-[0.02em] [font-family:Koulen,cursive]'
@@ -149,7 +159,7 @@ onBeforeUnmount(() => {
         {{ props.label }}
       </label>
 
-      <div class='flex items-center gap-3'>
+      <div class='flex h-11 items-center gap-3'>
         <div
           class='inline-grid align-middle'
           @mouseenter='isHovered = true'
@@ -181,7 +191,7 @@ onBeforeUnmount(() => {
           >
         </div>
 
-        <span class='font-normal text-[18px] leading-[22px] text-[#1E0E4C] [font-family:Inter,sans-serif]'>
+        <span class='shrink-0 whitespace-nowrap font-normal text-[18px] leading-[22px] text-[#1E0E4C] [font-family:Inter,sans-serif]'>
           {{ captionText }}
         </span>
       </div>
