@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import { store } from '@/store'
 import AVPerson from '@/components/AVPerson.vue'
 
+const base = import.meta.env.BASE_URL
 const route = useRoute()
 
 const person = computed(() => {
@@ -16,7 +17,7 @@ const person = computed(() => {
   <div v-if="person" class="flex flex-col gap-4">
     <router-link to="/" class="text-violet-600 hover:underline text-sm">&larr; Back</router-link>
     <AVPerson
-      avatar-src="/cat.jpg"
+      :avatar-src="`${base}cat.jpg`"
       :alt-text="person.name"
       v-model="person.ageInHours"
       :label="`${person.name.toUpperCase()} IS`"
