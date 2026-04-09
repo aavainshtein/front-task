@@ -150,6 +150,8 @@ function handleMaska(event: CustomEvent<MaskaDetail>) {
       <img
         :src='avatarSrc'
         :alt='props.altText ?? ""'
+        loading='lazy'
+        decoding='async'
         class='h-20 w-20 rounded-full object-cover'
         :class='props.ui?.avatar'
       >
