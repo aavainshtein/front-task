@@ -10,15 +10,12 @@ type MaskaDetail = {
 
 const props = defineProps<{
   avatarSrc: string
-  modelValue: number | null
   label?: string
   caption?: string
   altText?: string
 }>()
 
-const emits = defineEmits<{
-  (e: 'update:modelValue', value: number | null): void
-}>()
+const model = defineModel<number | null>({ required: true })
 
 const inputId = useId()
 const captionId = useId()
@@ -101,7 +98,7 @@ function formatDigits(value: string) {
 }
 
 watch(
-  () => props.modelValue,
+  model,
   (nextValue) => {
     const normalizedValue = nextValue === null ? '' : String(nextValue)
     const maskedValue = formatDigits(normalizedValue)
@@ -115,8 +112,7 @@ watch(
 
 function handleMaska(event: CustomEvent<MaskaDetail>) {
   inputValue.value = event.detail.masked
-  const numValue = event.detail.unmasked === '' ? null : Number(event.detail.unmasked)
-  emits('update:modelValue', numValue)
+  model.value = event.detail.unmasked === '' ? null : Number(event.detail.unmasked)
 }
 </script>
 

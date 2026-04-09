@@ -10,12 +10,6 @@ const person = computed(() => {
   const id = Number(route.params.id)
   return store.people.find((p) => p.id === id)
 })
-
-function updateAge(value: number | null) {
-  if (person.value) {
-    person.value.ageInHours = value ?? 0
-  }
-}
 </script>
 
 <template>
@@ -24,10 +18,9 @@ function updateAge(value: number | null) {
     <AVPerson
       :avatar-src="'/cat.jpg'"
       :alt-text="person.name"
-      :model-value="person.ageInHours"
+      v-model="person.ageInHours"
       :label="`${person.name.toUpperCase()} IS`"
       caption="hours old"
-      @update:model-value="updateAge"
     />
   </div>
 
