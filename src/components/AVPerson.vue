@@ -121,9 +121,20 @@ watch(
   { immediate: true },
 )
 
+const MAX_DIGITS = 15 // Number.MAX_SAFE_INTEGER has 16 digits; 15 guarantees no precision loss
+
 function handleMaska(event: CustomEvent<MaskaDetail>) {
+  const unmasked = event.detail.unmasked
+
+  if (unmasked.length > MAX_DIGITS) {
+    const reverted = model.value === null ? '' : formatDigits(String(model.value))
+    ;(event.target as HTMLInputElement).value = reverted
+    inputValue.value = reverted
+    return
+  }
+
   inputValue.value = event.detail.masked
-  model.value = event.detail.unmasked === '' ? null : Number(event.detail.unmasked)
+  model.value = unmasked === '' ? null : Number(unmasked)
 }
 </script>
 
